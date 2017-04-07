@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ExampleApp.Models.Product>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ExampleApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="m-1 p-1">
+        <h4 class="bg-primary text-xs-center p-1 text-white">@ViewBag.Message</h4>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model) {
+                    <tr>
+                        <td>@p.ProductID</td>
+                        <td>@p.Name</td>
+                        <td>@p.Category</td>
+                        <td>$@p.Price.ToString("F2")</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

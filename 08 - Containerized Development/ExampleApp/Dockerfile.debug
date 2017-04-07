@@ -1,0 +1,22 @@
+﻿FROM microsoft/aspnetcore-build:1.1.1
+
+RUN apt-get update && apt-get install -y unzip
+
+WORKDIR /clrdbg
+
+RUN curl -SL \
+	https://raw.githubusercontent.com/Microsoft/MIEngine/getclrdbg-release/scripts/GetClrDbg.sh \
+	--output GetClrDbg.sh \
+    && chmod 700 GetClrDbg.sh \
+    && ./GetClrDbg.sh -v latest -l . \
+    && rm GetClrDbg.sh
+
+EXPOSE 80/tcp
+
+VOLUME /app
+
+WORKDIR /app
+
+ENTRYPOINT echo "Restoring packages..." && dotnet restore \
+       && echo "Building project..." && dotnet build \
+	&& echo "Ready for debugging." && sleep infinity 

@@ -1,0 +1,58 @@
+﻿version: "3"
+  
+volumes:
+  productdata:
+
+networks:
+  backend:
+
+services:
+
+  mysql:
+    image: "mysql:8.0.0"
+    volumes:
+      - productdata:/var/lib/mysql
+    networks:
+      - backend
+    environment: 
+      - MYSQL_ROOT_PASSWORD=mysecret
+      - bind-address=0.0.0.0
+
+  mvc:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/obj
+      - /app/bin
+      - ~/.nuget:/root/.nuget
+      - /root/.nuget/packages/.tools
+    ports:
+      - 3000:80
+    networks:
+      - backend
+    environment:
+      - DBHOST=mysql
+      - WAITHOST=mysql
+    depends_on:
+      - mysql
+  
+  debug:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    volumes:
+      - .:/app
+      - /app/obj
+      - /app/bin
+      - ~/.nuget:/root/.nuget
+      - /root/.nuget/packages/.tools
+    ports:
+      - 3000:80
+    networks:
+      - backend
+    environment:
+      - DBHOST=mysql
+    depends_on:
+      - mysql

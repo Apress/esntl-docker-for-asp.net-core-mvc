@@ -1,0 +1,19 @@
+﻿FROM microsoft/aspnetcore-build:1.1.1
+
+COPY node_modules/wait-for-it.sh/bin/wait-for-it /tools/wait-for-it.sh
+
+RUN chmod +x /tools/wait-for-it.sh
+
+ENV DBHOST=dev_mysql WAITHOST=dev_mysql WAITPORT=3306
+
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true 
+
+EXPOSE 80/tcp
+
+VOLUME /app
+
+WORKDIR /app
+
+ENTRYPOINT dotnet restore \
+    && /tools/wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 \
+	&& dotnet watch run --environment=Development

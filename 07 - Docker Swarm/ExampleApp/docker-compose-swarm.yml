@@ -1,0 +1,38 @@
+version: "3"
+  
+volumes:
+  productdata_swarm:
+
+networks:
+  backend:
+
+services:
+
+  mysql:
+    image: "mysql:8.0.0"
+    volumes:
+      - productdata_swarm:/var/lib/mysql
+    networks:
+      - backend
+    environment: 
+      - MYSQL_ROOT_PASSWORD=mysecret
+      - bind-address=0.0.0.0
+    deploy:
+        replicas: 1
+        placement:
+            constraints:
+            - node.hostname == dbhost
+
+  mvc:
+    image: "apress/exampleapp:swarm-1.0"
+    networks:
+      - backend
+    environment:
+      - DBHOST=mysql
+    ports: 
+      - 3000:80      
+    deploy:
+        mode: global
+        placement:
+            constraints:
+            - node.labels.type == mvc      

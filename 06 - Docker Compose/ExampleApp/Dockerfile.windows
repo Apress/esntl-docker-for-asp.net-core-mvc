@@ -1,0 +1,11 @@
+﻿FROM microsoft/dotnet:1.1.1-runtime-nanoserver
+ 
+COPY dist /app
+
+WORKDIR /app
+
+EXPOSE 80/tcp
+
+ENV ASPNETCORE_URLS http://+:80
+
+ENTRYPOINT ["dotnet", "ExampleApp.dll"]
